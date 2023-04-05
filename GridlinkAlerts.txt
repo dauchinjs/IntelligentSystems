@@ -1,0 +1,58 @@
+Overall: all functions could use return type declaration for easier code reading and debugging.
+    For some places the naming could be full, so it is easier to understand,
+    for example "GridlinkVqLongForm" or 'gridlink_vq_short, what is Vq? What is "tg_phi" in line 173.
+    Functions that aren't being used in this class, but in child classes, should be at the bottom of the class
+    for easier code reading.
+    Don't use different naming conventions in the same code, stick to one, for example class names "gridlink_alerts" and "AlertsTool"
+    Instead of using "Prepare..." for function naming, you can use "Set..." as it better indicates what the function does.
+    Extract reusable code into functions and use them in other places, for example for function AlertFormConfig()
+    in line 252.
+Line 21: if the AlertsTool class constructor already initializes all the required properties and performs necessary
+    setup tasks, then the __construct() method in gridlink_alerts class may not be needed.
+    If the __construct() method is not needed, then it should be removed.
+Line 25: a method that calls the parent class's Prepare() method
+Line 30: the GetSubtoolName() method and SUBTOOL_NAME constant are not needed, because the GetSubtoolName() method
+    isn't being used anywhere and SUBTOOL_NAME constant is only used in the GetSubtoolName() method.
+Line 35: this method returns the path to the template directory
+Line 41: this method fetches all the alerts of various types and assigns them to the template and sets it as the output
+    for the "HtmlPage". It also assigns the URLs for the various actions that can be performed on the alerts.
+Line 44: is missing a bracket ")" at the end of the line for "->assign()"
+Line 55: this method saves the alert settings based on the alert type, checks if the alert already exists or not by the
+    alert ID. Gets the necessary information about the object and if the save is successful, it redirects to ActionAlertForm().
+Line 41, 55: if functions ActionAlertList() and ActionSaveAlert() are also in the parent class then they are implemented
+    correctly, but if they are not in the parent class then they should be removed from "gridlink_alerts" class, because
+    the IDE has noted that the functions are potentially not being used here.
+Line 60: code checks if $alert is truthy before creating a new $alert, but then assigns $alert_type to $alert->GetType()
+    even if $alert is falsy. This may result in an error.
+Line 105: if statement should have an else statement to handle the case when the if statement is false, so either way
+    the $save_status variable is set to a value.
+Line 112: this method displays a form for editing an existing alert or creating a new one. If an alert ID is
+    provided, the method retrieves the alert object and populates the form with the alert's current settings. If there
+    are any errors, they are displayed on the form. It prepares the range alert configuration if the alert type is
+    "gridlink_cons_range". If the alert type is "gridlink_cons_range", it converts the range from watt-seconds to kilowatt-hours.
+    $alert_id is unnecessary, because its value is overwritten immediately.
+    The function is doing a lot of things at once, so it would be better to split it into smaller functions.
+    Also, the code uses a mix of procedural and object-oriented programming styles, which makes it harder to read. Try
+    using only one style.
+Line 171: this method takes an array of configuration parameters as an argument and sets default values for two of those
+    parameters ("tg_phi" and "intervals_per_period") if they are not already set.
+Line 179: this method takes an array of configuration parameters as an argument and, depending on whether the
+    array is empty, sets default values for some of the parameters or converts certain parameters from strings to arrays
+    if they are not already arrays.
+Line 183: "foreach" loop iterates over the array attributes using $id as the key variable, but $id is never used.
+    This could be confusing to someone reading the code, and might indicate that there's a logic error.
+Line 203: single "&" is being used not "&&" for the if statement. This could cause unexpected behavior.
+Line 211: this method sets a default value for "max_temp" if it is not already set.
+Line 217: this method returns an associative array with alert class names as keys and arrays of supported device types as values.
+    if function GetConnpointTypesByAlert() is also in the parent class then it is implemented correctly,
+    but if it is not in the parent class then it should be removed from "gridlink_alerts" class, because
+    the IDE has noted that the function is potentially not being used here.
+Line 230: this method takes an alert type as an argument and returns an array of connection point IDs that are available
+    for that type of alert.
+Line 237: has an unnecessary "$" in front of brackets
+Line 252: this method returns an associative array with alert form information, including paths to templates, names,
+    alert types, and IDs. The array also includes a JSON-encoded string of filtered devices for each form, which is
+    generated by calling the GetAvailableConnpoints method for the appropriate alert type.
+    Extract repeated code. Consider creating a function that takes in the unique information and returns the
+    common configuration options for each form.
+    GetTypeFromClass() could be replaced with the "::class" constant
